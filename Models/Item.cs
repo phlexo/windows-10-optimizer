@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Management.Automation;
 
-public class ItemModel : INotifyPropertyChanged
+public class Item : INotifyPropertyChanged
 {
     private string _name = "";
     private string _displayName = "";

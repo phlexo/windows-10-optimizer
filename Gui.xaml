@@ -9,7 +9,7 @@
             <TabControl DockPanel.Dock="Top">
                 <TabItem Header="Applications">
                     <StackPanel>
-                        <ItemsControl ItemsSource="{Binding Applications}">
+                        <ItemsControl ItemsSource="{Binding Apps.Items}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <CheckBox Content="{Binding DisplayName}" IsChecked="{Binding IsChecked}" />
@@ -20,25 +20,13 @@
                 </TabItem>
                 <TabItem Header="Services">
                     <StackPanel>
-                        <CheckBox>Microsoft (R) Diagnostics Hub Standard Collector Service</CheckBox>
-                        <CheckBox>Diagnostics Tracking Service</CheckBox>
-                        <CheckBox>WAP Push Message Routing Service (see known issues)</CheckBox>
-                        <CheckBox>HomeGroup Listener</CheckBox>
-                        <CheckBox>HomeGroup Provider</CheckBox>
-                        <CheckBox>Geolocation Service</CheckBox>
-                        <CheckBox>Downloaded Maps Manager</CheckBox>
-                        <CheckBox>Net.Tcp Port Sharing Service</CheckBox>
-                        <CheckBox>Routing and Remote Access</CheckBox>
-                        <CheckBox>Remote Registry</CheckBox>
-                        <CheckBox>Internet Connection Sharing (ICS)</CheckBox>
-                        <CheckBox>Distributed Link Tracking Client</CheckBox>
-                        <CheckBox>Windows Biometric Service</CheckBox>
-                        <CheckBox>WLAN AutoConfig</CheckBox>
-                        <CheckBox>Windows Media Player Network Sharing Service</CheckBox>
-                        <CheckBox>Windows Security Center Service</CheckBox>
-                        <CheckBox>Xbox Live Auth Manager</CheckBox>
-                        <CheckBox>Xbox Live Game Save Service</CheckBox>
-                        <CheckBox>Xbox Live Networking Service</CheckBox>
+                        <ItemsControl ItemsSource="{Binding Services.Items}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <CheckBox Content="{Binding DisplayName}" IsChecked="{Binding IsChecked}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </StackPanel>
                 </TabItem>
                 <TabItem Header="Shortcuts">

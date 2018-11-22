@@ -2,10 +2,11 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Management.Automation;
 
-public class MainWindowModel : INotifyPropertyChanged
+public class MainWindow : INotifyPropertyChanged
 {
     private string _title = "";
-    private readonly ObservableCollection<ItemModel> _applications = new ObservableCollection<ItemModel>();
+    private Apps _apps;
+    private Services _services;
 
     public string Title
     {
@@ -17,9 +18,24 @@ public class MainWindowModel : INotifyPropertyChanged
         }
     }
 
-    public ObservableCollection<ItemModel> Applications
+    public Apps Apps
     {
-        get { return _applications; }
+        get { return _apps; }
+        set
+        {
+            _apps = value;
+            NotifyPropertyChanged("Apps");
+        }
+    }
+
+    public Services Services
+    {
+        get { return _services; }
+        set
+        {
+            _services = value;
+            NotifyPropertyChanged("Services");
+        }
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

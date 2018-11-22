@@ -4,6 +4,8 @@ Set-StrictMode -Version Latest
 
 Add-Type -AssemblyName PresentationCore, PresentationFramework, WindowsBase, System.Windows.Forms
 Add-Type -Path "$PSScriptRoot\Models\*.cs"
+Import-Module "$PSScriptRoot\Modules\Apps.psm1"
+Import-Module "$PSScriptRoot\Modules\Services.psm1"
 
 try {
     # Load XAML
@@ -13,34 +15,12 @@ try {
     $Xml.SelectNodes("//*[@Name]") | %{ Set-Variable -Name ($_.Name) -Value $Window.FindName($_.Name) -Scope Global }
     
     # Load data context
-    
-    $MainWindowModel = New-Object -TypeName MainWindowModel -Property @{
+
+    $Window.DataContext = New-Object -TypeName MainWindow -Property @{
         "Title" = "Windows 10 Power Settings";
+        "Apps" = Get-Apps;
+        "Services" = Get-Services;
     }
-
-    $MainWindowModel.Applications.Add((New-Object -TypeName ItemModel -Property @{
-        "Name" = "Microsoft.3DBuilder";
-        "DisplayName" = "Microsoft.3DBuilder";
-    })) | Out-Null
-    $MainWindowModel.Applications.Add((New-Object -TypeName ItemModel -Property @{
-        "Name" = "Microsoft.Appconnector";
-        "DisplayName" = "Microsoft.Appconnector";
-    })) | Out-Null
-    $MainWindowModel.Applications.Add((New-Object -TypeName ItemModel -Property @{
-        "Name" = "Microsoft.BingFinance";
-        "DisplayName" = "Microsoft.BingFinance";
-        "IsChecked" = "True";
-    })) | Out-Null
-    $MainWindowModel.Applications.Add((New-Object -TypeName ItemModel -Property @{
-        "Name" = "Microsoft.BingNews";
-        "DisplayName" = "Microsoft.BingNews";
-    })) | Out-Null
-    $MainWindowModel.Applications.Add((New-Object -TypeName ItemModel -Property @{
-        "Name" = "Microsoft.BingSports";
-        "DisplayName" = "Microsoft.BingSports";
-    })) | Out-Null
-
-    $Window.DataContext = $MainWindowModel;
 
     # Event handlers
 
@@ -76,7 +56,6 @@ try {
 
     $Window.ShowDialog() | Out-Null
 } catch {
-    Show-Console
     Write-Host
     Write-Host $_.Exception.Message
     Write-Host
