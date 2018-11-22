@@ -1,345 +1,84 @@
-<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Windows 10 Optimizer" Height="650" Width="700" Name="Form">
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="{Binding Title}" Height="650" Width="700" Name="Form">
     <Grid>
         <DockPanel>
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="Settings">
-                    <MenuItem Name="MenuItemRestorDefaultSettings" Header="Restore default settings (requires restart)" />
+                    <MenuItem Name="menuItemExit" Header="Exit" />
                 </MenuItem>
             </Menu>
-
-            <GroupBox DockPanel.Dock="Top" Margin="10, 10, 10, 0">
-                <GroupBox.Header>
-                   Server:
-                </GroupBox.Header>
-                <Grid Margin="10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="130" />
-                        <ColumnDefinition Width="10" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="10" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <TextBlock FontWeight="Bold" Text="Name:" VerticalAlignment="Center" Grid.Column="0" Grid.Row="0" />
-                    <Grid Grid.Column="2" Grid.Row="0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <ComboBox Name="ComboBoxRemoteComputers" IsSynchronizedWithCurrentItem="True" Grid.Column="0">
-                            <ComboBox.ItemTemplate>
+            <TabControl DockPanel.Dock="Top">
+                <TabItem Header="Applications">
+                    <StackPanel>
+                        <ItemsControl ItemsSource="{Binding Applications}">
+                            <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Name}" Margin="0" />
+                                    <CheckBox Content="{Binding DisplayName}" IsChecked="{Binding IsChecked}" />
                                 </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                        <Button Name="ButtonShowAddRemoteComputerDialog" Width="60" Grid.Column="2">Add</Button>
-                        <Button Name="ButtonRemoveRemoteComputer" IsEnabled="False" Width="60" Grid.Column="4">Remove</Button>
-                    </Grid>
-
-                    <Grid Grid.Row="2" Grid.Column="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="90" />
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="10" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-
-                        <TextBlock FontWeight="Bold" Text="Status:" Grid.Row="0" Grid.Column="0" />
-                        <TextBlock Name="TextBlockStatus" Grid.Row="0" Grid.Column="2" />
-                        <TextBlock FontWeight="Bold" Text="Users:" Grid.Row="0" Grid.Column="4" />
-                        <TextBlock Name="TextBlockUsers" Grid.Row="0" Grid.Column="6" />
-
-                        <TextBlock FontWeight="Bold" Text="Version:" Grid.Row="2" Grid.Column="0" />
-                        <TextBlock Name="TextBlockVersion" Grid.Row="2" Grid.Column="2" />
-                        <TextBlock FontWeight="Bold" Text="Installed by:" Grid.Row="2" Grid.Column="4" />
-                        <TextBlock Name="TextBlockInstalledBy" Grid.Row="2" Grid.Column="6" />
-                    </Grid>
-                </Grid>
-            </GroupBox>
-
-            <GroupBox DockPanel.Dock="Top" Margin="10, 10, 10, 0">
-                <GroupBox.Header>
-                   Database:
-                </GroupBox.Header>
-                <Grid Margin="10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="130" />
-                        <ColumnDefinition Width="10" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <TextBlock FontWeight="Bold" Text="Action:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" />
-                    <ComboBox Name="ComboBoxDatabaseActions" Grid.Row="0" Grid.Column="2">
-                        <ComboBoxItem Tag="None">Do nothing</ComboBoxItem>
-                        <ComboBoxItem Tag="Migrate" IsSelected="True">Apply database patches</ComboBoxItem>
-                        <ComboBoxItem Tag="Rollback">Rollback</ComboBoxItem>
-                        <ComboBoxItem Tag="RollbackCustomScriptDir">Rollback using custom script directory</ComboBoxItem>
-                        <ComboBoxItem Tag="SimpleRollback">Rollback and migrate without adding data</ComboBoxItem>
-                    </ComboBox>
-
-                    <Grid Margin="0, 10, 0, 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
-                        <Grid.Style>
-                            <Style>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=ComboBoxDatabaseActions, Path=SelectedItem.Tag}" Value="RollbackCustomScriptDir">
-                                        <Setter Property="Grid.Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                                <Setter Property="Grid.Visibility" Value="Collapsed" />
-                            </Style>
-                        </Grid.Style>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="130" />
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="60" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock FontWeight="Bold" Text="Script directory:" VerticalAlignment="Center" Grid.Column="0" />
-                        <TextBox Name="TextBlockCustomScriptDir" Grid.Column="2" />
-                        <Button Name="ButtonScriptDir" Grid.Column="4">Browse</Button>
-                    </Grid>
-
-                    <Grid Margin="0, 10, 0, 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
-                        <Grid.Style>
-                            <Style>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=ComboBoxDatabaseActions, Path=SelectedItem.Tag}" Value="Rollback">
-                                        <Setter Property="Grid.Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding ElementName=ComboBoxDatabaseActions, Path=SelectedItem.Tag}" Value="SimpleRollback">
-                                        <Setter Property="Grid.Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                                <Setter Property="Grid.Visibility" Value="Collapsed" />
-                            </Style>
-                        </Grid.Style>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="130" />
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock FontWeight="Bold" Text="Script directory:" VerticalAlignment="Center" Grid.Column="0" />
-                        <TextBox Name="TextBlockScriptDir" IsReadOnly="True" IsReadOnlyCaretVisible="True" Grid.Column="2" />
-                    </Grid>
-                </Grid>
-            </GroupBox>
-
-            <GroupBox DockPanel.Dock="Top" Margin="10, 10, 10, 0">
-                <GroupBox.Header>
-                   Installation:
-                </GroupBox.Header>
-                <Grid Margin="10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="130" />
-                        <ColumnDefinition Width="10" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="10" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="10" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="10" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-
-                    <TextBlock FontWeight="Bold" Text="Action:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" />
-                    <ComboBox Name="ComboBoxInstallationActions" Grid.Row="0" Grid.Column="2">
-                        <ComboBoxItem Tag="None">Do nothing</ComboBoxItem>
-                        <ComboBoxItem Tag="Install" IsSelected="True">Install</ComboBoxItem>
-                        <ComboBoxItem Tag="Uninstall">Uninstall</ComboBoxItem>
-                    </ComboBox>
-
-                    <TextBlock FontWeight="Bold" Text="Server type:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" />
-                    <ComboBox Name="ComboBoxServerTypes" Grid.Row="2" Grid.Column="2">
-                        <ComboBox.Style>
-                            <Style>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=ComboBoxInstallationActions, Path=SelectedItem.Tag}" Value="Install">
-                                        <Setter Property="ComboBox.IsEnabled" Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                                <Setter Property="Grid.IsEnabled" Value="False" />
-                            </Style>
-                        </ComboBox.Style>
-                        <ComboBoxItem Tag="All" IsSelected="True">All</ComboBoxItem>
-                        <ComboBoxItem Tag="BaseServer">Base server</ComboBoxItem>
-                        <ComboBoxItem Tag="ComServer">Comm server</ComboBoxItem>
-                        <ComboBoxItem Tag="WebServer">Web server</ComboBoxItem>
-                    </ComboBox>
-
-                    <TextBlock FontWeight="Bold" Text="Document root:" VerticalAlignment="Center" Grid.Row="4" Grid.Column="0" />
-                    <CheckBox Name="CheckBoxDocumentRoot" IsChecked="True" VerticalAlignment="Center" Grid.Row="4" Grid.Column="2">
-                        <CheckBox.Style>
-                            <Style>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=ComboBoxInstallationActions, Path=SelectedItem.Tag}" Value="Install">
-                                        <Setter Property="CheckBox.IsEnabled" Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                                <Setter Property="Grid.IsEnabled" Value="False" />
-                            </Style>
-                        </CheckBox.Style>
-                    </CheckBox>
-                </Grid>
-            </GroupBox>
-
-            <Grid DockPanel.Dock="Bottom" Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Button Name="ButtonDeploy" Content="Deploy" IsEnabled="False" Grid.Column="1" Width="100" />
-                <Button Name="ButtonQuit" Content="Quit" Grid.Column="3" Width="100" />
-            </Grid>
-
-            <Grid Margin="10, 10, 10, 0">
-                <Grid.Style>
-                    <Style>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding ElementName=ComboBoxInstallationActions, Path=SelectedItem.Tag}" Value="Install">
-                                <Setter Property="Grid.IsEnabled" Value="True" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding ElementName=ComboBoxDatabaseActions, Path=SelectedItem.Tag}" Value="Rollback">
-                                <Setter Property="Grid.IsEnabled" Value="True" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding ElementName=ComboBoxDatabaseActions, Path=SelectedItem.Tag}" Value="RollbackCustomScriptDir">
-                                <Setter Property="Grid.IsEnabled" Value="True" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding ElementName=ComboBoxDatabaseActions, Path=SelectedItem.Tag}" Value="SimpleRollback">
-                                <Setter Property="Grid.IsEnabled" Value="True" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                        <Setter Property="Grid.IsEnabled" Value="False" />
-                    </Style>
-                </Grid.Style>
-                <GroupBox>
-                    <GroupBox.Header>
-                    Packages:
-                    </GroupBox.Header>
-                    <Grid Margin="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="130" />
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="10" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="10" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="10" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-
-                        <TextBlock FontWeight="Bold" Text="Filter:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" />
-                        <Grid Grid.Row="0" Grid.Column="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="5" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="5" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="5" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <RadioButton GroupName="RadioButtonPackageFilter" Name="RadioButtonPackageFilterAll" Content="All" IsChecked="True" Grid.Column="0" />
-                            <RadioButton GroupName="RadioButtonPackageFilter" Name="RadioButtonPackageFilterFeatures" Content="Features" Grid.Column="2" />
-                            <RadioButton GroupName="RadioButtonPackageFilter" Name="RadioButtonPackageFilterHotfixes" Content="Hotfixes" Grid.Column="4" />
-                            <RadioButton GroupName="RadioButtonPackageFilter" Name="RadioButtonPackageFilterSupport" Content="Support" Grid.Column="6" />
-                        </Grid>
-
-                        <TextBlock FontWeight="Bold" Text="Sort mode:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" />
-                        <Grid Grid.Row="2" Grid.Column="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="5" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <RadioButton GroupName="RadioButtonPackageFilterSortOrder" Name="RadioButtonPackageFilterSortByDate" Content="Sort by date" IsChecked="True" Grid.Column="0" />
-                            <RadioButton GroupName="RadioButtonPackageFilterSortOrder" Name="RadioButtonPackageFilterSortByBranch" Content="Sort by branch" Grid.Column="2" />
-                        </Grid>
-
-                        <TextBlock FontWeight="Bold" Text="Feature:" VerticalAlignment="Center" Grid.Row="4" Grid.Column="0" />
-                        <Grid Grid.Row="4" Grid.Column="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="10" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <ComboBox Name="ComboBoxPackages" IsSynchronizedWithCurrentItem="True" Grid.Column="0">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Margin="0">
-                                            <TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{1:yyyy-MM-dd HH:mm:ss} - {0}">
-                                                    <Binding Path="Branch" />
-                                                    <Binding Path="Timestamp" />
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                            <Button Name="ButtonRefreshPackages" Width="60" Grid.Column="2">Refresh</Button>
-                        </Grid>
-
-                        <TextBlock FontWeight="Bold" Text="Version:" VerticalAlignment="Center" Grid.Row="6" Grid.Column="0" />
-                        <TextBlock Name="TextBlockPackageVersion" Text="" VerticalAlignment="Center" Grid.Row="6" Grid.Column="2" />
-                    </Grid>
-                </GroupBox>
-            </Grid>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Services">
+                    <StackPanel>
+                        <CheckBox>Microsoft (R) Diagnostics Hub Standard Collector Service</CheckBox>
+                        <CheckBox>Diagnostics Tracking Service</CheckBox>
+                        <CheckBox>WAP Push Message Routing Service (see known issues)</CheckBox>
+                        <CheckBox>HomeGroup Listener</CheckBox>
+                        <CheckBox>HomeGroup Provider</CheckBox>
+                        <CheckBox>Geolocation Service</CheckBox>
+                        <CheckBox>Downloaded Maps Manager</CheckBox>
+                        <CheckBox>Net.Tcp Port Sharing Service</CheckBox>
+                        <CheckBox>Routing and Remote Access</CheckBox>
+                        <CheckBox>Remote Registry</CheckBox>
+                        <CheckBox>Internet Connection Sharing (ICS)</CheckBox>
+                        <CheckBox>Distributed Link Tracking Client</CheckBox>
+                        <CheckBox>Windows Biometric Service</CheckBox>
+                        <CheckBox>WLAN AutoConfig</CheckBox>
+                        <CheckBox>Windows Media Player Network Sharing Service</CheckBox>
+                        <CheckBox>Windows Security Center Service</CheckBox>
+                        <CheckBox>Xbox Live Auth Manager</CheckBox>
+                        <CheckBox>Xbox Live Game Save Service</CheckBox>
+                        <CheckBox>Xbox Live Networking Service</CheckBox>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Shortcuts">
+                    <StackPanel>
+                        <CheckBox>Desktop</CheckBox>
+                        <CheckBox>Documents</CheckBox>
+                        <CheckBox>Downloads</CheckBox>
+                        <CheckBox>Music</CheckBox>
+                        <CheckBox>Pictures</CheckBox>
+                        <CheckBox>Videos</CheckBox>
+                        <CheckBox>3D Objects</CheckBox>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Miscellaneous">
+                    <StackPanel>
+                        <CheckBox>Cortana</CheckBox>
+                        <CheckBox>Telemetry</CheckBox>
+                        <CheckBox>OneDrive</CheckBox>
+                        <CheckBox>Edge PDF</CheckBox>
+                        <CheckBox>Windows Defender</CheckBox>
+                        <CheckBox>Defuse Windows search settings</CheckBox>
+                        <CheckBox>Set general privacy options</CheckBox>
+                        <CheckBox>Disable synchronisation of settings</CheckBox>
+                        <CheckBox>Set privacy policy accepted state to 0</CheckBox>
+                        <CheckBox>Do not scan contact informations</CheckBox>
+                        <CheckBox>Microsoft Edge settings</CheckBox>
+                        <CheckBox>Disable background access of default apps</CheckBox>
+                        <CheckBox>Disable location sensor</CheckBox>
+                        <CheckBox>Disable submission of Windows Defender findings (w/ elevated privileges)</CheckBox>
+                        <CheckBox>Do not share wifi networks</CheckBox>
+                        <CheckBox>MarkC's mouse acceleration fix</CheckBox>
+                        <CheckBox>Disable mouse pointer hiding</CheckBox>
+                        <CheckBox>Disable Game DVR and Game Bar</CheckBox>
+                        <CheckBox>Disable easy access keyboard stuff</CheckBox>
+                        <CheckBox>Restoring old volume slider</CheckBox>
+                        <CheckBox>Setting folder view options</CheckBox>
+                        <CheckBox>Setting default explorer view to This PC</CheckBox>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
         </DockPanel>
-
-        <Grid Name="GridAddRemoteComputerDialog" Visibility="Hidden">
-            <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="White" Opacity="0.5" />
-            <Grid>
-                <Border HorizontalAlignment="Stretch" VerticalAlignment="Top" BorderThickness="1" CornerRadius="10" BorderBrush="Black" Background="White" Opacity="1" Margin="20">
-                    <Grid Margin="20">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="10" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="10" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="60" />
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="60" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock FontWeight="Bold" Text="Add remote computer" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" />
-                        <TextBox Name="TextBoxAddRemoteComputer" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" />
-                        <Button Name="ButtonAddRemoteComputer" Grid.Row="4" Grid.Column="1">Add</Button>
-                        <Button Name="ButtonCancelAddRemoteComputer" Grid.Row="4" Grid.Column="3">Cancel</Button>
-                    </Grid>
-                </Border>
-            </Grid>
-        </Grid>
     </Grid>
 </Window>
